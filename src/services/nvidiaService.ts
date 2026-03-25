@@ -6,7 +6,7 @@ import type {
   RecommendationDecision,
 } from '../types/ai'
 
-const NVIDIA_ENDPOINT = '/api/nvidia/v1/chat/completions'
+const NVIDIA_ENDPOINT = 'https://integrate.api.nvidia.com/v1/chat/completions'
 const RATE_LIMIT_MSG = 'NVIDIA API usage limit was reached. Please wait and try again later or check your API quota.'
 
 export type NvidiaErrorCode = 'RATE_LIMIT' | 'REQUEST_FAILED'

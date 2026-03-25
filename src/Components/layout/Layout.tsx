@@ -33,7 +33,7 @@ function Layout() {
             <div className="hero-banner__base">
               <img
                 className="hero-banner__base-image"
-                src="/hamster-bg.png"
+                src={`${import.meta.env.BASE_URL}hamster-bg.png`}
                 alt="Hamster background"
               />
             </div>
@@ -44,7 +44,7 @@ function Layout() {
             >
               <img
                 className="hero-banner__coins-image"
-                src="/coins-layer.png"
+                src={`${import.meta.env.BASE_URL}coins-layer.png`}
                 alt="Floating coins"
               />
             </div>

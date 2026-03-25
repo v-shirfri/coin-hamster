@@ -198,7 +198,7 @@ function AiRecommendationPage() {
           {/* Hamster verdict image (yes / no) */}
           <img
             className="ai-result-side-image"
-            src={isBuy ? '/yes.png' : '/no.png'}
+            src={isBuy ? `${import.meta.env.BASE_URL}yes.png` : `${import.meta.env.BASE_URL}no.png`}
             alt={isBuy ? 'Hamster recommends buying' : 'Hamster does not recommend buying'}
           />
 
