@@ -6,7 +6,6 @@ import type {
   RecommendationDecision,
 } from '../types/ai'
 
-const NVIDIA_ENDPOINT = 'https://integrate.api.nvidia.com/v1/chat/completions'
 const RATE_LIMIT_MSG = 'NVIDIA API usage limit was reached. Please wait and try again later or check your API quota.'
 
 export type NvidiaErrorCode = 'RATE_LIMIT' | 'REQUEST_FAILED'
@@ -35,10 +34,6 @@ function buildApiFailureMessage(status: number, errorBody: unknown) {
   if (!isRecord(errorBody) || !isRecord(errorBody.error)) return fallback
   const msg = (errorBody.error as Record<string, unknown>).message
   return typeof msg === 'string' && msg.trim() ? msg.trim() : fallback
-}
-
-export function getNvidiaApiKey() {
-  return sanitize(import.meta.env.VITE_NVIDIA_API_KEY)
 }
 
 export function getNvidiaApiKeyHelpText() {
@@ -134,23 +129,20 @@ export async function fetchAiRecommendation(coin: CoinAiMarketData): Promise<AiR
 
   if (!apiKey) throw new Error(getNvidiaApiKeyHelpText())
 
-  const response = await fetch(NVIDIA_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model,
-      temperature: 0.4,
-      messages: [
-        { role: 'system', content: 'You are an objective crypto analyst. You must return ONLY a JSON object. Be critical — say "not buy" when data shows negative trends.' },
-        { role: 'user', content: buildPrompt(coin) },
-      ],
-      max_tokens: 300,
-      top_p: 1,
-    }),
-  })
+  const response = await fetch('/api/nvidia', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    model: sanitize(import.meta.env.VITE_NVIDIA_MODEL) ?? 'meta/llama-3.1-8b-instruct',
+    temperature: 0.4,
+    messages: [
+      { role: 'system', content: 'You are an objective crypto analyst. Return ONLY JSON.' },
+      { role: 'user', content: buildPrompt(coin) },
+    ],
+    max_tokens: 300,
+    top_p: 1,
+  }),
+  });
 
   if (!response.ok) {
     let errorBody: unknown = null
