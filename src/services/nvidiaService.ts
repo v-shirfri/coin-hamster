@@ -36,10 +36,6 @@ function buildApiFailureMessage(status: number, errorBody: unknown) {
   return typeof msg === 'string' && msg.trim() ? msg.trim() : fallback
 }
 
-export function getNvidiaApiKeyHelpText() {
-  return 'Missing NVIDIA API key. Create a .env file in the project root, add VITE_NVIDIA_API_KEY=your_key, and restart the Vite dev server.'
-}
-
 export function isNvidiaRateLimitError(error: unknown): error is NvidiaRequestError {
   return error instanceof NvidiaRequestError && error.code === 'RATE_LIMIT'
 }
@@ -124,16 +120,13 @@ function isQuotaOrRateLimitError(status: number, errorBody: unknown) {
 }
 
 export async function fetchAiRecommendation(coin: CoinAiMarketData): Promise<AiRecommendationResult> {
-  const apiKey = getNvidiaApiKey()
   const model = sanitize(import.meta.env.VITE_NVIDIA_MODEL) ?? 'meta/llama-3.1-8b-instruct'
-
-  if (!apiKey) throw new Error(getNvidiaApiKeyHelpText())
 
   const response = await fetch('/api/nvidia', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    model: sanitize(import.meta.env.VITE_NVIDIA_MODEL) ?? 'meta/llama-3.1-8b-instruct',
+    model: model,
     temperature: 0.4,
     messages: [
       { role: 'system', content: 'You are an objective crypto analyst. Return ONLY JSON.' },

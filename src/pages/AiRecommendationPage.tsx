@@ -4,8 +4,6 @@ import { useAppSelector } from '../app/hooks'
 import { fetchCoinAiMarketData } from '../services/aiDataService'
 import {
   fetchAiRecommendation,
-  getNvidiaApiKey,
-  getNvidiaApiKeyHelpText,
   isNvidiaRateLimitError,
 } from '../services/nvidiaService'
 import type {
@@ -41,7 +39,6 @@ function AiRecommendationPage() {
   const [cooldownRemainingMs, setCooldownRemainingMs] = useState(0)
   const resultRef = useRef<HTMLDivElement>(null)
 
-  const hasApiKey = Boolean(getNvidiaApiKey())
   const hasCoins = selectedCoins.length > 0
   const isCoolingDown = cooldownRemainingMs > 0
   const cooldownSeconds = Math.ceil(cooldownRemainingMs / 1000)
@@ -129,12 +126,6 @@ function AiRecommendationPage() {
         </div>
       )}
 
-      {hasCoins && !hasApiKey && (
-        <div className="state-card state-card--error">
-          <p>{getNvidiaApiKeyHelpText()}</p>
-        </div>
-      )}
-
       {hasCoins && (
         <div className="ai-panel state-card">
           <fieldset className="ai-selector">
@@ -158,7 +149,7 @@ function AiRecommendationPage() {
 
           <button
             className="state-card__button ai-panel__button"
-            disabled={!hasApiKey || status === 'loading' || isCoolingDown || !selectedCoinId}
+            disabled={status === 'loading' || isCoolingDown || !selectedCoinId}
             onClick={() => void handleGenerateRecommendation()}
             type="button"
           >
