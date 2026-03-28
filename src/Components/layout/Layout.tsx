@@ -14,7 +14,7 @@ function Layout() {
 
   // Coins parallax: moves at 0.5x scroll speed, capped at 100px (scaleY headroom).
   const bannerHeight = heroRef.current?.offsetHeight ?? 420
-  const coinsParallaxY = Math.min(scrollY * 0.5, bannerHeight * 0.22)
+  const coinsParallaxY = Math.min(scrollY * 0.5, bannerHeight)
 
   return (
     <div className="app-shell">
